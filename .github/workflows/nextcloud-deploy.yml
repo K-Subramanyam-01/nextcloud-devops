@@ -1,25 +1,27 @@
-name: Nextcloud CI/CD Deploy
+name: Nextcloud CI/CD Deployment
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Connect to server & deploy
-      uses: appleboy/ssh-action@v0.1.10
+    - name: Setup SSH key
+      uses: webfactory/ssh-agent@v0.8.0
       with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          cd ~/nextcloud
-          sudo docker compose down
-          sudo docker compose pull
-          sudo docker compose up -d --build
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy Nextcloud using Docker Compose
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "
+        cd ~/nextcloud && \
+        docker compose pull && \
+        docker compose up -d --build
+        "
