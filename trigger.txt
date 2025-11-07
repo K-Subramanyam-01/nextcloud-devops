@@ -8,3 +8,4 @@ final test
 deploy test
 deploy test
 deploy trigger
+deploy trigger
