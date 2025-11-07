@@ -10,3 +10,4 @@ deploy test
 deploy trigger
 deploy trigger
 deploy trigger
+deploy trigger
